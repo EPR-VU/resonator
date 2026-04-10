@@ -16,18 +16,18 @@ default_num_model_points = 10000
 data_defaults = {'linestyle': 'none',
                  'marker': '.',
                  'markersize': 2,
-                 'color': 'gray',
+                 'color': 'darkgray',
                  'alpha': 1,
                  'label': 'data'}
 
 fit_defaults = {'linestyle': '-',
-                'linewidth': 0.3,
+                'linewidth': 0.7,
                 'color': color_cycle[0],
                 'alpha': 1,
                 'label': 'best fit'}
 
 initial_defaults = {'linestyle': '--',
-                    'linewidth': 0.3,
+                    'linewidth': 0.7,
                     'color': color_cycle[1],
                     'alpha': 1,
                     'label': 'initial fit'}

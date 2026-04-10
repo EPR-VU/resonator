@@ -88,7 +88,7 @@ def kerr_detuning_shift(detuning, coupling_loss, internal_loss, kerr_input, io_c
     # Three distinct real roots
     if three_distinct_real.any():
         # Cast to complex so that sqrt() returns one of the complex roots.
-        sqrt_arg = (delta1[three_distinct_real] ** 2 - 4 * delta0[three_distinct_real] ** 3).astype(np.complex)
+        sqrt_arg = (delta1[three_distinct_real] ** 2 - 4 * delta0[three_distinct_real] ** 3).astype(complex)
         cc_three_distinct_real = ((delta1[three_distinct_real] + np.sqrt(sqrt_arg)) / 2) ** (1 / 3)
         xi = (-1 + 1j * np.sqrt(3)) / 2
         x0 = np.real(-1 / 3 * (b[three_distinct_real] + cc_three_distinct_real

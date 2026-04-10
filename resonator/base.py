@@ -96,7 +96,7 @@ class ResonatorFitter(object):
         if self.errors is None:
             return None
         else:
-            return 1 / self.errors.real + 1j / self.errors.imag
+            return 1 / np.real(self.errors) + 1j / np.imag(self.errors)
 
     @property
     def background_model(self):
