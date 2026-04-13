@@ -48,9 +48,9 @@ The `examples` folder contains Jupyter notebooks with detailed examples of fitti
 The fitting is done using [lmfit](https://lmfit.github.io/lmfit-py/), a fitting package that is built on routines in `scipy.optimize` but allows for more control and flexibility.
 
 ## Install
-Check out the repository from [GitHub](https://github.com/danielflanigan/resonator):
+Check out the repository from [GitHub](https://github.com/EPR-VU/resonator):
 ```bash
-/directory/for/code$ git clone https://github.com/danielflanigan/resonator.git
+/directory/for/code$ git clone https://github.com/EPR-VU/resonator
 ```
 I recommend installing the package in editable mode:
 ```bash
@@ -85,3 +85,7 @@ Inverse quality factors are preferred here over the energy decay rates because t
 
 In order to make this choice transparent to users, the ResonatorFitter class (and thus all of its subclasses) has
 properties that calculate the quality factors and energy decay rates as well as their standard errors.
+
+
+## Acknowledgement
+Code forked from Daniel Flannigan's [GitHub](https://github.com/danielflanigan/resonator):
