@@ -132,3 +132,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - `One`, `Phase`, and `MagnitudePhase` model functions accepted numpy scalars but not floats.
+
+## [0.4.0] - 2026-04-13
+### Added
+- Fano profile fitting
