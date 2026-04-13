@@ -88,4 +88,4 @@ properties that calculate the quality factors and energy decay rates as well as 
 
 
 ## Acknowledgement
-Code forked from Daniel Flannigan's [GitHub](https://github.com/danielflanigan/resonator):
+Code forked from Daniel Flannigan's [GitHub](https://github.com/danielflanigan/resonator).
