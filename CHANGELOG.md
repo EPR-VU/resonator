@@ -136,3 +136,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.4.0] - 2026-04-13
 ### Added
 - Fano profile fitting
+
+## [0.5.0] - 2026-04-14
+### Added
+- see.py updated to include a selector function enabling easier interaction in the notebooks
+- fano.py now has transmission support as well as reflection

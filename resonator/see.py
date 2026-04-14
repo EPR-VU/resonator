@@ -517,6 +517,71 @@ def triptych(resonator, three_axes=None, normalize=False, num_model_points=defau
         return figure, three_axes
 
 
+def range_selector(frequency, data, ax_mag, ax_phase, fig):
+    """
+    Add an interactive frequency range selector to a pair of magnitude/phase axes.
+
+    Click and drag on the magnitude axis to zoom both axes into the selected range.
+    A "Reset zoom" button is displayed below the plot to restore the original view.
+
+    :param frequency: array of frequencies in Hz.
+    :param data: array of complex scattering parameter values.
+    :param ax_mag: matplotlib Axes showing magnitude (dB).
+    :param ax_phase: matplotlib Axes showing phase (radians).
+    :param fig: the parent matplotlib Figure.
+    :return: dict with keys 'min' and 'max' (Hz) updated on each selection; pass to the fit cell.
+    """
+    from matplotlib.widgets import SpanSelector
+    import ipywidgets as widgets
+    from IPython.display import display
+
+    orig_xlim = ax_mag.get_xlim()
+    orig_mag_ylim = ax_mag.get_ylim()
+    orig_phase_ylim = ax_phase.get_ylim()
+
+    selected_range = {}
+
+    def on_select(freq_min_ghz, freq_max_ghz):
+        selected_range['min'] = freq_min_ghz * 1e9
+        selected_range['max'] = freq_max_ghz * 1e9
+        print(f"Selected: {freq_min_ghz:.4f} — {freq_max_ghz:.4f} GHz")
+
+        mask = (frequency >= selected_range['min']) & (frequency <= selected_range['max'])
+
+        mag_vals = 20 * np.log10(np.abs(data[mask]))
+        phase_vals = np.angle(data[mask])
+
+        mag_pad = (mag_vals.max() - mag_vals.min()) * 0.1 or 0.1
+        phase_pad = (phase_vals.max() - phase_vals.min()) * 0.1 or 0.1
+
+        ax_mag.set_xlim(freq_min_ghz, freq_max_ghz)
+        ax_mag.set_ylim(mag_vals.min() - mag_pad, mag_vals.max() + mag_pad)
+        ax_phase.set_xlim(freq_min_ghz, freq_max_ghz)
+        ax_phase.set_ylim(phase_vals.min() - phase_pad, phase_vals.max() + phase_pad)
+        fig.canvas.draw_idle()
+
+    span = SpanSelector(ax_mag, on_select, direction="horizontal", useblit=True,
+                        props=dict(alpha=0.3, facecolor="steelblue"), interactive=True)
+
+    reset_btn = widgets.Button(description="Reset zoom", button_style="warning")
+
+    def on_reset(b):
+        selected_range.clear()
+        ax_mag.set_xlim(orig_xlim)
+        ax_mag.set_ylim(orig_mag_ylim)
+        ax_phase.set_xlim(orig_xlim)
+        ax_phase.set_ylim(orig_phase_ylim)
+        fig.canvas.draw_idle()
+
+    reset_btn.on_click(on_reset)
+    display(reset_btn)
+
+    # Keep span alive (prevent garbage collection)
+    fig._range_selector = span
+
+    return selected_range
+
+
 def photon_number_vs_frequency(resonator, input_power_dBm, axes=None, num_model_points=default_num_model_points,
                                frequency_scale=1, three_ticks=True, label_axes=True, plot_settings=None,
                                **subplots_kwds):
