@@ -15,47 +15,47 @@ default_num_model_points = 10000
 
 data_defaults = {'linestyle': 'none',
                  'marker': '.',
-                 'markersize': 2,
+                 'markersize': 4,
                  'color': 'darkgray',
                  'alpha': 1,
                  'label': 'data'}
 
 fit_defaults = {'linestyle': '-',
-                'linewidth': 0.7,
+                'linewidth': 1.5,
                 'color': color_cycle[0],
                 'alpha': 1,
                 'label': 'best fit'}
 
 initial_defaults = {'linestyle': '--',
-                    'linewidth': 0.7,
+                    'linewidth': 1.5,
                     'color': color_cycle[1],
                     'alpha': 1,
                     'label': 'initial fit'}
 
 resonance_defaults = {'linestyle': 'none',
                       'marker': '.',
-                      'markersize': 3,
+                      'markersize': 8,
                       'alpha': 1,
                       'label': 'resonance'}
 
 residuals_defaults = {'linestyle': 'none',
                       'marker': '.',
-                      'markersize': 2,
+                      'markersize': 4,
                       'color': color_cycle[0],
                       'alpha': 1,
                       'label': 'residuals'}
 
 photon_number_defaults = {'linestyle': '-',
-                          'linewidth': 0.3,
+                          'linewidth': 1.5,
                           'color': color_cycle[0],
                           'alpha': 1}
 
 crosshairs_defaults = {'color': 'gray',
                        'linestyle': ':'}
 
-triptych_figure_defaults = {}
+triptych_figure_defaults = {'figsize': (10, 5)}
 
-triptych_gridspec_defaults = {'hspace': 0.4,
+triptych_gridspec_defaults = {'hspace': 0.5,
                               'wspace': 0.4}
 
 frequency_scale_to_unit = {1: 'Hz',
@@ -466,7 +466,7 @@ def real_and_imaginary_residuals(resonator, axes=None, equal_aspect=True, label_
         return figure, axes
 
 
-def triptych(resonator, three_axes=None, normalize=False, num_model_points=default_num_model_points, frequency_scale=1,
+def triptych(resonator, three_axes=None, normalize=False, num_model_points=default_num_model_points, frequency_scale=1e-9,
              three_ticks=True, decibels=True, degrees=True, equal_aspect=True, label_axes=True, figure_settings=None,
              gridspec_settings=None, plot_data=True, plot_fit=True, plot_initial=False, plot_resonance=True,
              data_settings=None, fit_settings=None, initial_settings=None, resonance_settings=None, crosshairs=True,
@@ -514,6 +514,7 @@ def triptych(resonator, three_axes=None, normalize=False, num_model_points=defau
                        resonance_settings=resonance_settings, crosshairs=crosshairs,
                        **subplots_kwds)
     if figure is not None:
+        figure.tight_layout()
         return figure, three_axes
 
 
