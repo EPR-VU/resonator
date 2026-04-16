@@ -53,10 +53,9 @@ photon_number_defaults = {'linestyle': '-',
 crosshairs_defaults = {'color': 'gray',
                        'linestyle': ':'}
 
-triptych_figure_defaults = {'figsize': (10, 5)}
+triptych_figure_defaults = {'figsize': (10, 6)}
 
-triptych_gridspec_defaults = {'hspace': 0.5,
-                              'wspace': 0.4}
+triptych_gridspec_defaults = {'wspace': 0.4}
 
 frequency_scale_to_unit = {1: 'Hz',
                            1e-3: 'kHz',
@@ -514,7 +513,7 @@ def triptych(resonator, three_axes=None, normalize=False, num_model_points=defau
                        resonance_settings=resonance_settings, crosshairs=crosshairs,
                        **subplots_kwds)
     if figure is not None:
-        figure.tight_layout()
+        figure.tight_layout(pad=1.5, h_pad=3.0, w_pad=2.0)
         return figure, three_axes
 
 
