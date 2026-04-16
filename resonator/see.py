@@ -53,9 +53,9 @@ photon_number_defaults = {'linestyle': '-',
 crosshairs_defaults = {'color': 'gray',
                        'linestyle': ':'}
 
-triptych_figure_defaults = {'figsize': (10, 6)}
+triptych_figure_defaults = {'figsize': (12, 4)}
 
-triptych_gridspec_defaults = {'wspace': 0.4}
+triptych_gridspec_defaults = {'wspace': 0.45}
 
 frequency_scale_to_unit = {1: 'Hz',
                            1e-3: 'kHz',
@@ -487,10 +487,10 @@ def triptych(resonator, three_axes=None, normalize=False, num_model_points=defau
         gridspec_kwds = triptych_gridspec_defaults.copy()
         if gridspec_settings is not None:
             gridspec_kwds.update(gridspec_settings)
-        gridspec = plt.GridSpec(2, 2, **gridspec_kwds)
+        gridspec = plt.GridSpec(1, 3, **gridspec_kwds)
         ax_magnitude = figure.add_subplot(plt.subplot(gridspec.new_subplotspec((0, 0), 1, 1)))
-        ax_phase = figure.add_subplot(plt.subplot(gridspec.new_subplotspec((1, 0), 1, 1)))
-        ax_complex = figure.add_subplot(plt.subplot(gridspec.new_subplotspec((0, 1), 2, 1)))
+        ax_phase = figure.add_subplot(plt.subplot(gridspec.new_subplotspec((0, 1), 1, 1)))
+        ax_complex = figure.add_subplot(plt.subplot(gridspec.new_subplotspec((0, 2), 1, 1)))
         three_axes = (ax_magnitude, ax_phase, ax_complex)
     else:
         figure = None
@@ -513,7 +513,7 @@ def triptych(resonator, three_axes=None, normalize=False, num_model_points=defau
                        resonance_settings=resonance_settings, crosshairs=crosshairs,
                        **subplots_kwds)
     if figure is not None:
-        figure.tight_layout(pad=1.5, h_pad=3.0, w_pad=2.0)
+        figure.tight_layout(pad=1.5, w_pad=3.0)
         return figure, three_axes
 
 
