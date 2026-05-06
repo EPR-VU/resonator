@@ -585,7 +585,7 @@ def range_selector(frequency, data, ax_mag, ax_phase, fig):
             except ValueError:
                 pass
             _pick['line'] = None
-        selected_range.pop('k', None)
+        selected_range.pop('delay', None)
         fig.canvas.draw_idle()
 
     def on_phase_click(event):
@@ -597,7 +597,13 @@ def range_selector(frequency, data, ax_mag, ax_phase, fig):
         if len(_pick['points']) >= 2:
             _clear_phase_picks()
 
-        x, y = event.xdata, event.ydata
+        # Snap to nearest point on the phase trace in display coordinates
+        trace = ax_phase.lines[0]
+        tx, ty = trace.get_xdata(), trace.get_ydata()
+        pts_display = ax_phase.transData.transform(np.column_stack([tx, ty]))
+        click_display = ax_phase.transData.transform([[event.xdata, event.ydata]])[0]
+        idx = np.argmin(np.sum((pts_display - click_display) ** 2, axis=1))
+        x, y = tx[idx], ty[idx]
         marker, = ax_phase.plot(x, y, 'r+', markersize=10, markeredgewidth=2, zorder=5)
         _pick['markers'].append(marker)
         _pick['points'].append((x, y))
