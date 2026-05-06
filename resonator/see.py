@@ -519,17 +519,21 @@ def triptych(resonator, three_axes=None, normalize=False, num_model_points=defau
 
 def range_selector(frequency, data, ax_mag, ax_phase, fig):
     """
-    Add an interactive frequency range selector to a pair of magnitude/phase axes.
+    Add an interactive frequency range selector and two-point tau estimator.
 
     Click and drag on the magnitude axis to zoom both axes into the selected range.
-    A "Reset zoom" button is displayed below the plot to restore the original view.
+    Click two points on the phase axis to draw the connecting line and compute its slope k
+    (from phase = k*f + a), which is stored in the returned dict for use as an initial
+    guess for the electrical delay tau.  A third click resets the two-point selection.
 
     :param frequency: array of frequencies in Hz.
     :param data: array of complex scattering parameter values.
     :param ax_mag: matplotlib Axes showing magnitude (dB).
-    :param ax_phase: matplotlib Axes showing phase (radians).
+    :param ax_phase: matplotlib Axes showing phase (radians or degrees).
     :param fig: the parent matplotlib Figure.
-    :return: dict with keys 'min' and 'max' (Hz) updated on each selection; pass to the fit cell.
+    :return: dict updated on each interaction; keys:
+        'min', 'max'  – selected frequency range in Hz,
+        'k'           – slope of the two-point line on the phase axis (phase-units / f-units).
     """
     from matplotlib.widgets import SpanSelector
     import ipywidgets as widgets
@@ -541,6 +545,7 @@ def range_selector(frequency, data, ax_mag, ax_phase, fig):
 
     selected_range = {}
 
+    # --- Frequency range selector (drag on magnitude axis) ---
     def on_select(freq_min_ghz, freq_max_ghz):
         selected_range['min'] = freq_min_ghz * 1e9
         selected_range['max'] = freq_max_ghz * 1e9
@@ -563,7 +568,65 @@ def range_selector(frequency, data, ax_mag, ax_phase, fig):
     span = SpanSelector(ax_mag, on_select, direction="horizontal", useblit=True,
                         props=dict(alpha=0.3, facecolor="steelblue"), interactive=True)
 
+    # --- Two-point slope picker on phase axis ---
+    _pick = {'points': [], 'markers': [], 'line': None}
+
+    def _clear_phase_picks():
+        for m in _pick['markers']:
+            try:
+                m.remove()
+            except ValueError:
+                pass
+        _pick['markers'].clear()
+        _pick['points'].clear()
+        if _pick['line'] is not None:
+            try:
+                _pick['line'].remove()
+            except ValueError:
+                pass
+            _pick['line'] = None
+        selected_range.pop('k', None)
+        fig.canvas.draw_idle()
+
+    def on_phase_click(event):
+        if event.inaxes is not ax_phase or event.button != 1:
+            return
+        if event.xdata is None or event.ydata is None:
+            return
+
+        if len(_pick['points']) >= 2:
+            _clear_phase_picks()
+
+        x, y = event.xdata, event.ydata
+        marker, = ax_phase.plot(x, y, 'r+', markersize=10, markeredgewidth=2, zorder=5)
+        _pick['markers'].append(marker)
+        _pick['points'].append((x, y))
+
+        if len(_pick['points']) == 2:
+            x1, y1 = _pick['points'][0]
+            x2, y2 = _pick['points'][1]
+            k = (y2 - y1) / (x2 - x1)
+            a = y1 - k * x1
+
+            if _pick['line'] is not None:
+                try:
+                    _pick['line'].remove()
+                except ValueError:
+                    pass
+            line, = ax_phase.plot([x1, x2], [y1, y2], color='tomato', linewidth=1.5, zorder=4)
+            _pick['line'] = line
+
+            selected_range['k'] = k
+            print(f"k = {k:.6g}   (phase = {k:.4g} · f + {a:.4g})")
+
+        fig.canvas.draw_idle()
+
+    cid = fig.canvas.mpl_connect('button_press_event', on_phase_click)
+    fig._phase_picker_cid = cid
+
+    # --- Buttons ---
     reset_btn = widgets.Button(description="Reset zoom", button_style="warning")
+    clear_btn = widgets.Button(description="Clear tau line", button_style="info")
 
     def on_reset(b):
         selected_range.clear()
@@ -571,12 +634,15 @@ def range_selector(frequency, data, ax_mag, ax_phase, fig):
         ax_mag.set_ylim(orig_mag_ylim)
         ax_phase.set_xlim(orig_xlim)
         ax_phase.set_ylim(orig_phase_ylim)
-        fig.canvas.draw_idle()
+        _clear_phase_picks()
+
+    def on_clear(_):
+        _clear_phase_picks()
 
     reset_btn.on_click(on_reset)
-    display(reset_btn)
+    clear_btn.on_click(on_clear)
+    display(widgets.HBox([reset_btn, clear_btn]))
 
-    # Keep span alive (prevent garbage collection)
     fig._range_selector = span
 
     return selected_range
