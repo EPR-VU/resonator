@@ -605,8 +605,8 @@ def range_selector(frequency, data, ax_mag, ax_phase, fig):
         if len(_pick['points']) == 2:
             x1, y1 = _pick['points'][0]
             x2, y2 = _pick['points'][1]
-            k = (y2 - y1) / (x2 - x1)
-            a = y1 - k * x1
+            k = (y2 - y1) / (x2 - x1) / 1e9  # convert from per-GHz to per-Hz
+            a = y1 - k * x1 * 1e9
 
             if _pick['line'] is not None:
                 try:
@@ -616,8 +616,8 @@ def range_selector(frequency, data, ax_mag, ax_phase, fig):
             line, = ax_phase.plot([x1, x2], [y1, y2], color='tomato', linewidth=1.5, zorder=4)
             _pick['line'] = line
 
-            selected_range['k'] = k
-            print(f"k = {k:.6g}   (phase = {k:.4g} · f + {a:.4g})")
+            selected_range['delay'] = k
+            print(f"delay = {k:.6g} (phase-units/Hz)   (phase = {k:.4g} · f_Hz + {a:.4g})")
 
         fig.canvas.draw_idle()
 
