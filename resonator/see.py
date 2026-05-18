@@ -55,7 +55,7 @@ crosshairs_defaults = {'color': 'gray',
 
 triptych_figure_defaults = {'figsize': (12, 4)}
 
-triptych_gridspec_defaults = {'wspace': 0.45}
+triptych_gridspec_defaults = {'wspace': 0.45, 'hspace': 0.5}
 
 real_and_imaginary_figure_defaults = {'figsize': (7, 6)}
 
@@ -428,6 +428,7 @@ def real_and_imaginary(resonator, axes=None, normalize=False, num_model_points=d
         axes.set_xlabel('real')
         axes.set_ylabel('imag')
     if figure is not None:
+        figure.tight_layout(h_pad=2.0)
         return figure, axes
 
 
