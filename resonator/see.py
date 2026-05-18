@@ -57,6 +57,8 @@ triptych_figure_defaults = {'figsize': (12, 4)}
 
 triptych_gridspec_defaults = {'wspace': 0.45}
 
+real_and_imaginary_figure_defaults = {'figsize': (7, 6)}
+
 frequency_scale_to_unit = {1: 'Hz',
                            1e-3: 'kHz',
                            1e-6: 'MHz',
@@ -328,7 +330,7 @@ def _plot_residuals_vs_frequency(resonator, transformer, vertical_label, axes, f
 
 def real_and_imaginary(resonator, axes=None, normalize=False, num_model_points=default_num_model_points,
                        equal_aspect=True, label_axes=True, plot_data=True, plot_fit=True,
-                       plot_initial=False, plot_resonance=True,  data_settings=None, fit_settings=None,
+                       plot_initial=False, plot_resonance=True, data_settings=None, fit_settings=None,
                        initial_settings=None, resonance_settings=None, crosshairs=True, **subplots_kwds):
     """
     Plot the imaginary parts versus the real parts of the data, best-fit model, and model at the best-fit resonance
@@ -360,7 +362,9 @@ def real_and_imaginary(resonator, axes=None, normalize=False, num_model_points=d
     :return: if axes is None, return a new Figure and Axes objects; otherwise, return None.
     """
     if axes is None:
-        figure, axes = plt.subplots(**subplots_kwds)
+        figure_kwds = real_and_imaginary_figure_defaults.copy()
+        figure_kwds.update(subplots_kwds)
+        figure, axes = plt.subplots(**figure_kwds)
     else:
         figure = None
     if crosshairs:
